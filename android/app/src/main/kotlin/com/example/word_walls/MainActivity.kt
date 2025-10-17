@@ -1,4 +1,4 @@
-package com.example.word_walls
+package com.cloudonlanapps.word_walls
 
 import io.flutter.embedding.android.FlutterActivity
 
