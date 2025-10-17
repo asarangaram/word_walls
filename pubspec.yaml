@@ -35,6 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   shadcn_ui: ^0.38.1
+  flutter_solidart: ^2.6.1
+  dart_mappable: ^4.6.1
+  minimal_mvn: ^2.0.2
 
 dev_dependencies:
   flutter_test:
