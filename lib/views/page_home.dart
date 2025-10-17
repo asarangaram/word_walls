@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:word_walls/notifiers/navigate.dart';
-
-import 'my_scaffold.dart';
+import 'package:word_walls/views/my_scaffold.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

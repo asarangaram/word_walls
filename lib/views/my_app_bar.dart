@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:word_walls/listeners/nav_listener.dart';
 import 'package:word_walls/listeners/ui_preferences_listener.dart';
+import 'package:word_walls/notifiers/navigate.dart';
 import 'package:word_walls/notifiers/ui_preferences.dart';
-
-import '../listeners/nav_listener.dart';
-import '../notifiers/navigate.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({super.key});
