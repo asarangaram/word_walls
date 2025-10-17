@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:word_walls/listeners/nav_listener.dart';
 import 'package:word_walls/listeners/ui_preferences_listener.dart';
-import 'package:word_walls/views/nav_page_view.dart';
+import 'package:word_walls/notifiers/navigate.dart';
+import 'package:word_walls/views/page_home.dart';
 import 'package:word_walls/views/page_pref.dart';
 
 class App extends StatelessWidget {
@@ -44,7 +46,14 @@ class App extends StatelessWidget {
               },
             ),
           ),
-          home: const NavPageView(),
+          home: NavListener(
+            builder: (context, navPage) {
+              return switch (navPage) {
+                NavPage.home => HomePage(),
+                NavPage.pref => PrefPage(),
+              };
+            },
+          ),
           builder: (context, child) {
             return child!;
           },

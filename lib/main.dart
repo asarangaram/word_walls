@@ -8,19 +8,3 @@ import 'package:word_walls/views/page_pref.dart';
 void main() {
   runApp(const App());
 }
-
-class NavPageView extends StatelessWidget {
-  const NavPageView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return NavListener(
-      builder: (context, navPage) {
-        return switch (navPage) {
-          NavPage.home => HomePage(),
-          NavPage.pref => PrefPage(),
-        };
-      },
-    );
-  }
-}
