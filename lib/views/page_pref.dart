@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:word_walls/views/my_scaffold.dart';
 
-import 'my_colour_picker.dart';
+import '../common/widgets/cl_color_picker.dart';
 
 class PrefPage extends StatelessWidget {
   const PrefPage({super.key});
@@ -23,10 +23,6 @@ class PrefForm extends StatefulWidget {
 
 class _PrefFormState extends State<PrefForm> {
   final formKey = GlobalKey<ShadFormState>();
-  final widthField = TextEditingController();
-  final heigthField = TextEditingController();
-  final wordPaddingField = TextEditingController();
-  final wordOverlapField = TextEditingController();
   Color color = Colors.white;
 
   @override
@@ -60,19 +56,45 @@ class _PrefFormState extends State<PrefForm> {
                                 TableCellVerticalAlignment.middle,
                             child: Align(
                               alignment: Alignment.centerLeft,
+                              child: Text("Wall Size: "),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: ShadInputFormField(
+                              id: 'username',
+                              label: const Text('Username'),
+                              placeholder: const Text('Enter your username'),
+                              description: const Text(
+                                'This is your public display name.',
+                              ),
+                              validator: (v) {
+                                if (v.length < 2) {
+                                  return 'Username must be at least 2 characters.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
                               child: Text("Background Color: "),
                             ),
                           ),
                           TableCell(
                             verticalAlignment:
                                 TableCellVerticalAlignment.middle,
-                            child: MyColourPicker(
-                              color: color,
-                              onColorChanged: (color) {
-                                setState(() {
-                                  this.color = color;
-                                });
-                              },
+                            child: CLColorPickerFormField(
+                              id: 'background color',
+                              initialValue: color,
                             ),
                           ),
                         ],
@@ -81,15 +103,13 @@ class _PrefFormState extends State<PrefForm> {
                   ),
                   ShadButton(
                     onPressed: () {
-                      // Handle form submission
-                      /*  ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(
-                          content: Text(
-                            'Selected Color: ${model.selectedColor}',
-                          ),
-                          backgroundColor: model.selectedColor,
-                        ),
-                      ); */
+                      if (formKey.currentState!.saveAndValidate()) {
+                        print(
+                          'validation succeeded with ${formKey.currentState!.value}',
+                        );
+                      } else {
+                        print('validation failed');
+                      }
                     },
                     child: const Text('Submit'),
                   ),

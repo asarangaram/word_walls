@@ -4,8 +4,31 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'shad_popover_scrollable.dart';
 
-class MyColourPicker extends StatefulWidget {
-  const MyColourPicker({
+class CLColorPickerFormField extends ShadFormBuilderField<Color> {
+  CLColorPickerFormField({
+    super.key,
+    super.id,
+
+    super.validator,
+    super.onSaved,
+    super.initialValue,
+    this.onColorChanged,
+  }) : super(
+         builder: (FormFieldState<Color> state) {
+           return CLColorPicker(
+             color: state.value ?? Colors.black,
+             onColorChanged: (color) {
+               state.didChange(color);
+               onColorChanged?.call(color);
+             },
+           ); // build UI here
+         },
+       );
+  final void Function(Color color)? onColorChanged;
+}
+
+class CLColorPicker extends StatefulWidget {
+  const CLColorPicker({
     super.key,
     required this.color,
     required this.onColorChanged,
@@ -14,23 +37,28 @@ class MyColourPicker extends StatefulWidget {
   final void Function(Color color) onColorChanged;
 
   @override
-  State<MyColourPicker> createState() => _MyColourPickerState();
+  State<CLColorPicker> createState() => _CLColorPickerState();
 }
 
-class _MyColourPickerState extends State<MyColourPicker> {
-  final popoverController = ShadPopoverController();
-  late TextEditingController textEditingController;
+class _CLColorPickerState extends State<CLColorPicker> {
+  late final ShadPopoverController popoverController;
+  late final TextEditingController textEditingController;
+  final GlobalKey _anchorKey = GlobalKey();
+  List<Color> recentColors = [];
+
   @override
   void initState() {
     textEditingController = TextEditingController(
-      text: "0x${widget.color.hex.toString().padLeft(8, '0')}",
+      text: "0x${widget.color.hexAlpha.toString().padLeft(8, '0')}",
     );
+    popoverController = ShadPopoverController();
     super.initState();
   }
 
   @override
   void dispose() {
     textEditingController.dispose();
+    popoverController.dispose();
     super.dispose();
   }
 
@@ -42,7 +70,6 @@ class _MyColourPickerState extends State<MyColourPicker> {
         : Colors.white.withValues(alpha: opacity);
   }
 
-  final GlobalKey _anchorKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return ShadPopoverScrollable(
@@ -50,18 +77,36 @@ class _MyColourPickerState extends State<MyColourPicker> {
       key: _anchorKey,
       popover: (context) => SizedBox(
         width: 288,
-        child: ColorPickerWrapper(
-          currentColor: Colors.blue,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ShadButton.link(
+                onPressed: popoverController.hide,
+                child: Text('Done'),
+              ),
+            ),
+            ColorPickerWrapper(
+              currentColor: Colors.blue,
+              recentColors: recentColors,
 
-          onColorChanged: (color) {
-            textEditingController.text =
-                "0x${color.hex.toString().padLeft(8, '0')}";
-            widget.onColorChanged(color);
-          },
+              onColorChanged: (color) {
+                recentColors.insert(0, color);
+                recentColors = recentColors.take(5).toList();
+                print(color);
+                textEditingController.text =
+                    "0x${color.hexAlpha.toString().padLeft(8, '0')}";
+                widget.onColorChanged(color);
+                //popoverController.hide();
+              },
+            ),
+          ],
         ),
       ),
       padding: EdgeInsets.all(2),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         spacing: 8,
         children: [
           IntrinsicWidth(
@@ -115,9 +160,11 @@ class ColorPickerWrapper extends StatelessWidget {
     super.key,
     required this.currentColor,
     required this.onColorChanged,
+    required this.recentColors,
   });
 
   final Color currentColor;
+  final List<Color> recentColors;
   final void Function(Color color) onColorChanged;
 
   @override
@@ -127,25 +174,31 @@ class ColorPickerWrapper extends StatelessWidget {
       padding: EdgeInsets.zero,
       color: currentColor,
       onColorChanged: onColorChanged,
-      width: kMinInteractiveDimension,
-      height: kMinInteractiveDimension,
+      //width: kMinInteractiveDimension,
+      //height: kMinInteractiveDimension,
       borderRadius: 8,
       subheading: Text(
         'Select color shade',
         style: Theme.of(context).textTheme.titleSmall,
       ),
+      showRecentColors: recentColors.isNotEmpty,
+      recentColors: recentColors,
       wheelSubheading: Text(
         'Selected color and its shades',
         style: Theme.of(context).textTheme.titleSmall,
       ),
-      showColorName: true,
-      showColorCode: true,
-      copyPasteBehavior: const ColorPickerCopyPasteBehavior(
-        longPressMenu: true,
+      recentColorsSubheading: Text(
+        'Recently used',
+        style: Theme.of(context).textTheme.titleSmall,
       ),
-      materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
-      colorNameTextStyle: Theme.of(context).textTheme.bodySmall,
-      colorCodeTextStyle: Theme.of(context).textTheme.bodySmall,
+      //showColorName: true,
+      //showColorCode: true,
+      /* copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+        longPressMenu: true,
+      ), */
+      //materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
+      //colorNameTextStyle: Theme.of(context).textTheme.bodySmall,
+      //colorCodeTextStyle: Theme.of(context).textTheme.bodySmall,
       pickersEnabled: const <ColorPickerType, bool>{
         ColorPickerType.both: false,
         ColorPickerType.primary: true,
