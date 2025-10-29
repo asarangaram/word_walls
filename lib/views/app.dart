@@ -5,6 +5,7 @@ import 'package:word_walls/listeners/ui_preferences_listener.dart';
 import 'package:word_walls/notifiers/navigate.dart';
 import 'package:word_walls/views/page_home.dart';
 import 'package:word_walls/views/page_pref.dart';
+import 'package:word_walls/views/page_test.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -51,6 +52,7 @@ class App extends StatelessWidget {
               return switch (navPage) {
                 NavPage.home => HomePage(),
                 NavPage.pref => PrefPage(),
+                NavPage.test => TestPage(),
               };
             },
           ),
